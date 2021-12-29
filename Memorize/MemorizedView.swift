@@ -13,28 +13,60 @@ struct MemorizedView: View {
     // Declearing that our struct MemorizedView behave like View (and get all the functionality of View
     // And to behave like a View, this need the variable body showed below
     
-    var emojis = ["🚌", "🚎", "🚒", "🚚"]
-    
+    var emojis = ["🚌", "🚎", "🚒", "🚚", "🦈", "🦆", "🦁", "🛵", "🚜", "🏯", "⚓️", "✈️", "🚠", "🚀", "🛳"]
+    @State var emojiCount = 4
     // In functional programming (at least in SwiftUI here), the varibale like this is not stored
     // in memory. Instead it will run the function of it and return a value that matches the type
     // (here Text is a View struct).
     // why not just set body: Text?
     // Since it might get more complicated when your code grows.
     var body: some View { // To build a Lego house, you need "some" Lege furniture :)
-        HStack { // View combiner
-            ForEach(emojis[0..<4], id: \.self) {emoji in
-                CardView(content: emoji)
+        VStack {
+            ScrollView {
+                LazyVGrid(columns: [GridItem(), GridItem(), GridItem()]) {
+                    ForEach(emojis[0..<emojiCount], id: \.self) {emoji in
+                        CardView(content: emoji)
+                            .aspectRatio(2/3, contentMode: .fit)
+                    }
+                }
             }
+            .foregroundColor(.red)
+            Spacer()
+            HStack {
+                removeCard
+                Spacer()
+                addCard
+            }
+            .padding(.horizontal)
+            .font(.largeTitle)
         }
         .padding(.horizontal)
-        .foregroundColor(.red) // Defualt color of the whole stack, can be override respecitvely.
+    }
+    
+    var addCard: some View {
+        Button(action: {
+            if emojiCount < emojis.count {
+                emojiCount += 1
+            }
+        }, label: {
+            Image(systemName: "plus.circle")
+        })
+    }
+
+    var removeCard: some View {
+        Button(action: {
+            if emojiCount > 1 {
+                emojiCount -= 1
+            }
+        }, label: {
+            Image(systemName: "minus.circle")
+        })
     }
 }
 
-
 // We want more small views rather than few large views.
 struct CardView: View {
-    @State var isFaceUp = false // @State ???
+    @State var isFaceUp = true // @State: create a pointer that look at the value (means state will change..?)
     var content: String
     
     var body: some View {
@@ -42,11 +74,11 @@ struct CardView: View {
             let shape = RoundedRectangle(cornerRadius: 20)
             if isFaceUp {
                 shape.fill().foregroundColor(.white)
-                shape.stroke(lineWidth: 3).foregroundColor(Color.orange)
+                shape.strokeBorder(lineWidth: 3)
                 Text(content).font(.largeTitle) // return Text, which "return" is saved to look cleaner.
             }
             else {
-                shape.fill().foregroundColor(.blue)
+                shape.fill()
             }
         }
         .onTapGesture {
@@ -65,15 +97,8 @@ struct CardView: View {
 
 
 
-
-
-
-
-
-
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         MemorizedView()
-            .preferredColorScheme(.dark)
     }
 }
