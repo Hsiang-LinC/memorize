@@ -37,37 +37,38 @@ struct MemorizedView: View {
                 Spacer()
                 addCard
             }
-            .padding(.horizontal)
             .font(.largeTitle)
+            .padding(.horizontal)
         }
         .padding(.horizontal)
     }
     
     var addCard: some View {
-        Button(action: {
+        Button {
             if emojiCount < emojis.count {
                 emojiCount += 1
             }
-        }, label: {
+        } label: {
             Image(systemName: "plus.circle")
-        })
+        }
     }
 
     var removeCard: some View {
-        Button(action: {
+        Button {
             if emojiCount > 1 {
                 emojiCount -= 1
             }
-        }, label: {
+        } label: {
             Image(systemName: "minus.circle")
-        })
+        }
     }
 }
 
 // We want more small views rather than few large views.
 struct CardView: View {
-    @State var isFaceUp = true // @State: create a pointer that look at the value (means state will change..?)
+    
     var content: String
+    @State var isFaceUp: Bool = true // @State: create a pointer that look at the value (means state will change..?)
     
     var body: some View {
         ZStack { // This stack views together, the return type is more than ZStack btw.
@@ -100,5 +101,8 @@ struct CardView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         MemorizedView()
+            .preferredColorScheme(.dark)
+        MemorizedView()
+            .preferredColorScheme(.light)
     }
 }
